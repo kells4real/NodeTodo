@@ -1,13 +1,19 @@
 const express = require('express')
 const router = express.Router()
+const auth = require("../middleware/auth");
 
-const {allUsers, createUser, updateUser, getUser, deleteUser} = require('../controllers/users')
+const {allUsers,updateUser, getUser, deleteUser, registerUser, loginUser} = require('../controllers/users')
 
 router.get('/', allUsers)
-router.post('/new', createUser)
+
+ // Register User
+router.post("/register", registerUser);
+    
+    // Login User
+router.post("/login", loginUser);
 
 
-router.route('/:id').get(getUser).put(updateUser).delete(deleteUser)
+router.route('/:id').get(auth, getUser).patch(auth, updateUser).delete(deleteUser)
 
 // router.param('id', (req, res, next, id) => {
     

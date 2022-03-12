@@ -1,21 +1,5 @@
 const Todo = require('../models/Todo');
-
-// Hard coded todos
-const todos = [{
-    "id": 1,
-    "title": "First Todo",
-    "description": "The very first todo.."
-},
-{
-    "id": 2,
-    "title": "Second Todo",
-    "description": "The second todo.."  
-},
-{
-    "id": 3,
-    "title": "Third Todo",
-    "description": "The very third todo.."
-}]
+const User = require('../models/User');
 
 // Todo controllers
 const allTodos = async (req, res) => {
@@ -46,8 +30,10 @@ const createTodo = async (req, res) => {
     // res.send(req.body)
     const todo = new Todo({
         title: req.body.title,
-        description: req.body.description
+        description: req.body.description,
+        user: req.body.user
     })
+    // const user = await User.findById(req.body.user)
 try{
     const savedTodo = await todo.save();
         res.json(savedTodo);
@@ -60,7 +46,7 @@ try{
 const updateTodo = async (req, res) => {
     try{
         const updatedTodo = await Todo.updateOne({_id: req.params.id}, { 
-            $set: {title: req.body.title, description: req.body.description}})
+            $set: {title: req.body.title, description: req.body.description, user: req.body.user}})
         res.json(updatedTodo)
         }catch(e){
             res.json({message: e})

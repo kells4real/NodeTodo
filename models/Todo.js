@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const Schema = mongoose.Schema;
 
 const TodoSchema = mongoose.Schema({
     title: {
@@ -17,7 +17,10 @@ const TodoSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    user: {type: Schema.Types.ObjectId,
+         ref: 'Users', required: true
+        }
 })
 
 module.exports = mongoose.model('Todos', TodoSchema)
