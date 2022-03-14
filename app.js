@@ -48,4 +48,4 @@ app.use('/users', userRoute)
 app.use('/todos', todoRoute)
 
 // Listening to the server
-app.listen(3000)
+app.listen(3001)

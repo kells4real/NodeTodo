@@ -3,8 +3,9 @@ const User = require('../models/User');
 
 // Todo controllers
 const allTodos = async (req, res) => {
+    const loggedIn = await User.findById(req.user.user_id);
     try{
-        const todos = await Todo.find()
+        const todos = await Todo.find({user: loggedIn._id})
         res.json(todos)
     }catch(e){
         res.json({message: e})
@@ -27,11 +28,11 @@ const getTodo = async (req, res) => {
 }
 
 const createTodo = async (req, res) => {
-    // res.send(req.body)
+    
     const todo = new Todo({
         title: req.body.title,
         description: req.body.description,
-        user: req.body.user
+        user: req.user.user_id
     })
     // const user = await User.findById(req.body.user)
 try{
@@ -44,19 +45,38 @@ try{
 }
 
 const updateTodo = async (req, res) => {
+    const loggedIn = await User.findById(req.user.user_id);
+    const todo = await Todo.findById(req.params.id);
+
     try{
+        // I converted the loggedIn and todo id objects to string because for some reason, they don't equate to the same even when they are
+        // I would need to do a research about why this is, this doesn't happen in the users controller
+        if (todo.user.toString() === loggedIn._id.toString()){
         const updatedTodo = await Todo.updateOne({_id: req.params.id}, { 
-            $set: {title: req.body.title, description: req.body.description, user: req.body.user}})
-        res.json(updatedTodo)
+            $set: {title: req.body.title, description: req.body.description,
+                 user: req.body.user, completed: req.body.completed}})
+        const newTodo = await Todo.findById(req.params.id);
+        res.json(newTodo)
+        }else{
+            res.status(401).json({message: "User Unauthorised!"})
+        }
         }catch(e){
             res.json({message: e})
         }
 }
 
 const deleteTodo = async (req, res) => {
+    const loggedIn = await User.findById(req.user.user_id);
+    const todo = await Todo.findById(req.params.id);
     try{
-    const deletedTodo = await Todo.remove({_id: req.params.id})
-    res.json(deleteTodo)
+         // I converted the loggedIn and todo id objects to string because for some reason, they don't equate to the same even when they are
+        // I would need to do a research about why this is, this doesn't happen in the users controller
+        if (loggedIn._id.toString() === todo.user.toString()){
+    const deletedTodo = await Todo.deleteOne({_id: req.params.id})
+        res.status(200).json({message: "Task Deleted!"})
+        }else{
+            res.status(401).json({message: "User Unauthorised!"})
+        }
     }catch(e){
         res.json({message: e})
     }

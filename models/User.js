@@ -8,10 +8,16 @@ const UserSchema = new mongoose.Schema({
   email: {type: String, lowercase: true, unique: true, required: [true, "can't be blank"], match: [/\S+@\S+\.\S+/, 'is invalid'], index: true},
   password: { type: String },
   token: { type: String },
-//   todos: [{
-//     type: Schema.Types.ObjectId,
-//     ref: 'Todos'
-//  }]
+  roles: {
+    admin: {
+      type: Boolean,
+      default: false
+    },
+    staff: {
+      type: Boolean,
+      default: false
+    }
+ }
 });
 
 UserSchema

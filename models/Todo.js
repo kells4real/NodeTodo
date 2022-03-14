@@ -20,7 +20,7 @@ const TodoSchema = mongoose.Schema({
     },
     user: {type: Schema.Types.ObjectId,
          ref: 'Users', required: true
-        }
+    }
 })
 
 module.exports = mongoose.model('Todos', TodoSchema)
