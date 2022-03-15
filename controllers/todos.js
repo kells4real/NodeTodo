@@ -31,7 +31,6 @@ const createTodo = async (req, res) => {
     
     const todo = new Todo({
         title: req.body.title,
-        description: req.body.description,
         user: req.user.user_id
     })
     // const user = await User.findById(req.body.user)
@@ -53,8 +52,7 @@ const updateTodo = async (req, res) => {
         // I would need to do a research about why this is, this doesn't happen in the users controller
         if (todo.user.toString() === loggedIn._id.toString()){
         const updatedTodo = await Todo.updateOne({_id: req.params.id}, { 
-            $set: {title: req.body.title, description: req.body.description,
-                 user: req.body.user, completed: req.body.completed}})
+            $set: {title: req.body.title, completed: req.body.completed}})
         const newTodo = await Todo.findById(req.params.id);
         res.json(newTodo)
         }else{
