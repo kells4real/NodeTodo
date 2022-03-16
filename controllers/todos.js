@@ -5,7 +5,7 @@ const User = require('../models/User');
 const allTodos = async (req, res) => {
     const loggedIn = await User.findById(req.user.user_id);
     try{
-        const todos = await Todo.find({user: loggedIn._id})
+        const todos = await Todo.find({user: loggedIn._id}).sort({"date": -1})
         res.json(todos)
     }catch(e){
         res.json({message: e})
