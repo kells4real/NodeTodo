@@ -5,10 +5,10 @@ const auth = require("../middleware/auth");
 
 
 router.get('/', auth, allTodos)
-router.post('/new',auth, createTodo)
+router.post('/new/',auth, createTodo)
 
 
-router.route('/:id').get(auth, getTodo).patch(auth, updateTodo).delete(auth, deleteTodo)
+router.route('/:id/').get(auth, getTodo).patch(auth, updateTodo).delete(auth, deleteTodo)
 
 // router.param('id', (req, res, next, id) => {
     
