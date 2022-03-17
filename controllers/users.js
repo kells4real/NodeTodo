@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/auth");
+const { response } = require("express");
 
 
 const allUsers = async (req, res) => {
@@ -35,20 +36,29 @@ const getUser = async (req, res) => {
     }
 }
 
+const checkUserExists = async (req, res) => {
+  user = await User.find({email: req.params.email})
+  try{
+  if (user.length > 0){
+      res.status(200).json({exists: true})
+  }else{
+    res.status(200).json({exists: false})
+  }
+}catch(e){
+  res.json({message: e})
+}
+
+}
+
 const registerUser = async (req, res) => {
     try {
         // Get user input
-        const { first_name, last_name, email, password, confirmPassword } = req.body;
+        const { first_name, last_name, email, password } = req.body;
     
         // Validate user input
-        if (!(email && password && confirmPassword && first_name && last_name)) {
+        if (!(email && password && first_name && last_name)) {
           res.status(400).send("All input is required");
-        }
-        if (password !== confirmPassword){
-          res.status(400).send("Password and Confirm Password are different");
-
-        }
-    
+        }        
         // check if user already exist
         // Validate if user exist in our database
         const oldUser = await User.findOne({ email });
@@ -59,6 +69,7 @@ const registerUser = async (req, res) => {
     
         //Encrypt user password
         encryptedPassword = await bcrypt.hash(password, 10);
+        
     
         // Create user in our database
         const user = await User.create({
@@ -156,5 +167,6 @@ module.exports = {
     updateUser,
     deleteUser,
     registerUser,
-    loginUser
+    loginUser,
+    checkUserExists
 }
