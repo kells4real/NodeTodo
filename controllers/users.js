@@ -82,10 +82,10 @@ const registerUser = async (req, res) => {
         // Create token
         const token = jwt.sign(
           { user_id: user._id, email },
-          process.env.TOKEN_KEY,
-          {
-            expiresIn: "24h",
-          }
+          process.env.TOKEN_KEY
+          // {
+          //   expiresIn: "24h",
+          // }
         );
         // save user token
         user.token = token;
@@ -116,9 +116,6 @@ const loginUser = async (req, res) => {
           const token = jwt.sign(
             { user_id: user._id, email },
             process.env.TOKEN_KEY,
-            {
-              expiresIn: "24h",
-            }
           );
     
           // save user token
@@ -136,6 +133,17 @@ const loginUser = async (req, res) => {
       // Our register logic ends here
     
 }
+
+const logOut = async function(req,res){
+  const authHeader = awaitreq.headers["authorization"];
+  jwt.sign(authHeader, "", { expiresIn: 1 } , (logout, err) => {
+  if (logout) {
+  res.send({msg : 'You have been Logged Out' });
+  } else {
+  res.send({msg:'Error'});
+  }
+  });
+}; 
 
 // Update user controller
 const updateUser = async (req, res) => {
@@ -168,5 +176,6 @@ module.exports = {
     deleteUser,
     registerUser,
     loginUser,
-    checkUserExists
+    checkUserExists,
+    logOut
 }
